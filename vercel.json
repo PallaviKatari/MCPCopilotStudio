@@ -1,10 +1,5 @@
 {
   "version": 2,
-  "functions": {
-    "api/mcp.js": {
-      "runtime": "nodejs20"
-    }
-  },
   "routes": [
     {
       "src": "/mcp",
