@@ -7,6 +7,7 @@ const server = new McpServer({
   version: "1.0.0",
 });
 
+// Register tool once at module load
 server.tool("getProducts", "Returns all Products", {}, async () => {
   try {
     const response = await axios.get("https://angular-json.vercel.app/Products");
@@ -19,11 +20,13 @@ server.tool("getProducts", "Returns all Products", {}, async () => {
 const sessions = {};
 
 export default async function handler(req, res) {
+  // Required SSE headers
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
 
-  const transport = new SSEServerTransport(req.url, res);
+  // Use static route path instead of req.url
+  const transport = new SSEServerTransport("/api/mcp", res);
   const sessionId = transport.sessionId;
   sessions[sessionId] = transport;
 
