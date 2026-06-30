@@ -8,10 +8,12 @@ const server = new McpServer({
 });
 
 server.tool("getProducts", "Returns all Products", {}, async () => {
-  const response = await axios.get("https://angular-json.vercel.app/Products");
-  return {
-    content: [{ type: "text", text: JSON.stringify(response.data) }],
-  };
+  try {
+    const response = await axios.get("https://angular-json.vercel.app/Products");
+    return { content: [{ type: "text", text: JSON.stringify(response.data) }] };
+  } catch (err) {
+    return { content: [{ type: "text", text: `Error fetching products: ${err.message}` }] };
+  }
 });
 
 const sessions = {};
