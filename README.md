@@ -18,6 +18,6 @@ It is designed to be deployed on **Vercel** and connected to **Copilot Studio**.
 
 ## 📦 Tool Provided
 
-### getProducts
+### getProductscustomer-mcp
 
 Returns a list of products from a public API:
