@@ -8,28 +8,20 @@ const server = new McpServer({
 });
 
 server.tool("getProducts", "Returns all Products", {}, async () => {
-  const response = await axios.get(
-    "https://angular-json.vercel.app/Products"
-  );
-
+  const response = await axios.get("https://angular-json.vercel.app/Products");
   return {
-    content: [
-      {
-        type: "text",
-        text: JSON.stringify(response.data),
-      },
-    ],
+    content: [{ type: "text", text: JSON.stringify(response.data) }],
   };
 });
 
 const sessions = {};
 
-/**
- * SSE endpoint
- */
 export default async function handler(req, res) {
-  const transport = new SSEServerTransport("/mcp", res);
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
 
+  const transport = new SSEServerTransport(req.url, res);
   const sessionId = transport.sessionId;
   sessions[sessionId] = transport;
 
@@ -40,13 +32,8 @@ export default async function handler(req, res) {
   });
 
   if (req.method === "POST") {
-    const sessionId = req.query.sessionId;
-    const session = sessions[sessionId];
-
-    if (!session) {
-      return res.status(400).send("Invalid session");
-    }
-
+    const session = sessions[req.query.sessionId];
+    if (!session) return res.status(400).send("Invalid session");
     return session.handlePostMessage(req, res);
   }
 }
